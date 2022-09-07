@@ -176,6 +176,9 @@ Though in recent Unity versions yielding a sub IEnumerator like this would actua
 
 This allows arbitrary nesting of coroutines within a single actual Coroutine instance. This is much more resource friendly. Also when you call StopCoroutine on the outer coroutine object (which is the only actual coroutine), all nested coroutines would be terminated as well.
 
+## Custom example coroutine scheduler
+I've written a [small example coroutine scheduler](/CoroutineExample/CoroutineScheduler.cs) that has no dependencies with Unity. It should illustrate how Unity may drive your coroutines. There's an [example MonoBehaviour component over here](/CoroutineExample/CustomCoroutineTest.cs) that shows how you can recreate the default queue, the WaitForSeconds queue as well as the WaitForFixedUpdate queue. There's also an example coroutine that should demonstrate all those features.
+
 
   [1]: https://en.wikipedia.org/wiki/Generator_(computer_programming)
 
