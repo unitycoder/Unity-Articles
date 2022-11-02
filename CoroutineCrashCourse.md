@@ -20,20 +20,23 @@ Just for completeness the IEnumerator interface also implements a parameterless 
 
 ##Usual usage of IEnumerables / IEnumerators
 As we already mentioned those generally represent things you can "iterate over". If C# we have the `foreach` loop which is somewhat related to those interfaces. When you have an object that implements the "IEnumerable" interface you can just use it in a foreach loop like this:
-
+```csharp
     foreach(MyType val in myObject)
     {
         // do something with "val".
     }
+```
 
 This actually translates to something like this:
 
+```csharp
     var enumerator = myObject.GetEnumerator();
     while (enumerator.MoveNext())
     {
         MyType val = (MyType)enumerator.Current;
         // do something with "val".
     }
+```
 
 (Note I simplified it a little bit. A foreach in addition ensures that Dispose is called if the object implements IDisposable, but that's irrelevant for now).
 
@@ -44,14 +47,17 @@ This is where the compiler magic comes into play. Of course we can simply create
 
 I try to give you an idea what is happening. Imagine a simple example like this:
 
+```csharp
     IEnumerable<int> MyIterator(int aFrom, int aTo)
     {
         for(int i = aFrom; i < aTo, i++)
             yield return i;
     }
+```
 
 This harmless looking "method" will turn into two classes and a method which will look something like this:
 
+```csharp
     IEnumerable<int> MyIterator(int aFrom, int aTo)
     {
         return new ___MyIterator_Enumerable(aFrom, aTo);
@@ -128,6 +134,8 @@ This harmless looking "method" will turn into two classes and a method which wil
             throw new NotImplementedException();
         }
     }
+```
+
 
 This is a quite drastic change. Our original method does not contain any of the code we have actually typed in the body. Instead the body of our method has been torn apart and turned into a statemachine object. This generated class is hidden. You won't see this code anywhere unless you decompile your code into IL then you will actually find that internal class.
 
@@ -148,6 +156,7 @@ Each time a coroutine is "resumed" the scheduler simply calls MoveNext and again
 
 In the latest version of Unity you can actually yield another IEnumerator directly in order to run / iterate that coroutine as subroutine. In the past you could only yield the Coroutine object that StartCoroutine returns. So you had to use StartCoroutine to start the sub coroutine and have the outer coroutine wait for the completion of the inner coroutine.
 
+```csharp
     IEnumerator InnerCoroutine()
     {
         yield return new WaitForSeconds(5);
@@ -158,17 +167,21 @@ In the latest version of Unity you can actually yield another IEnumerator direct
         yield return StartCoroutine(InnerCoroutine());
         // Something else
     }
+```
+
 
 The old way had several disadvantages. First of all, the outer coroutine needs to have access to the/a MonoBehaviour instance in order to call StartCoroutine for the sub routine. This limits the usage since coroutines can essentially be declared in any class. Also each call to StartCoroutine registers the passed IEnumerator object as a new coroutine to the scheduler, so additional garbage. Also there was a bug when you stop the inner coroutine, the outer coroutine would just hang forever as it waits for the completion of the inner one and that will never happen. Also stopping the outer coroutine did not stop the inner / nested sub coroutine as it is a completely seperate coroutine.
 
 So in more recent Unity versions you can directly do this:
 
+```csharp
     IEnumerator OuterRoutine()
     {
         // Something
         yield return InnerCoroutine();
         // Something else
     }
+```
 
 In the past this would not run the inner coroutine and the outer one would just wait for one frame, as the scheduler did not care about IEnumerator yield valies and just treated them like any unknown object and simply waited one frame.
 
