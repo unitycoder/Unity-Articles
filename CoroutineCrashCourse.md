@@ -109,17 +109,17 @@ This harmless looking "method" will turn into two classes and a method which wil
                         m_Current = m_i;
                         m_State = 0;
                         return true;
-                    } else [
+                    } else {
                         m_State = 1;
                         return false;
                     }
-                break
+                break;
                 case 0:
                     m_i++;
                     if (m_i < m_aTo) {
                         m_Current = m_i;
                         return true;
-                    } else [
+                    } else {
                         m_State = 1;
                         return false;
                     }
