@@ -1,5 +1,5 @@
 # What are Coroutines in Unity and how do they work?
-([originally posted on UA / Discussions]([http://answers.unity.com/answers/1749714/view.html](https://discussions.unity.com/t/coroutines-ienumerator-not-working-as-expected/237287/3)))
+([originally posted on UA / Discussions](https://discussions.unity.com/t/coroutines-ienumerator-not-working-as-expected/237287/3))
 
 Even though I have explained what a coroutine actually is several times in many questions, it seems that there is still quite a misunderstanding what a coroutine actually is and how they work.
 
